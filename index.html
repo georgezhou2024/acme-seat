@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Acme 卡座记录系统</title>
+<style>
+  :root {
+    --bg: #1a1210;
+    --card: #2a211c;
+    --card-hover: #342a24;
+    --text: #f5e6d3;
+    --muted: #a89a8a;
+    --gold: #d4af7a;
+    --border: #3d322b;
+    --occupied: #4a2c1a;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: radial-gradient(ellipse at top, #2a1a12 0%, #1a1210 60%);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+  }
+
+  .container {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* 顶部标题卡片 */
+  .header {
+    background: linear-gradient(145deg, #2f241c, #231a15);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 22px 20px 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  .time-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #3a2e24;
+    color: var(--gold);
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 999px;
+    margin-bottom: 12px;
+  }
+
+  .time-badge::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    background: #d4af7a;
+    border-radius: 50%;
+  }
+
+  h1 {
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* 区域标题 */
+  .section-title {
+    font-size: 15px;
+    font-weight: 500;
+    margin: 8px 0 4px 4px;
+  }
+
+  .section-desc {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 14px;
+    margin-left: 4px;
+  }
+
+  /* 卡座网格 */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 14px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    min-height: 118px;
+  }
+
+  .card:hover {
+    background: var(--card-hover);
+    transform: translateY(-2px);
+  }
+
+  .card.occupied {
+    background: var(--occupied);
+    border-color: #5c3a28;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+  }
+
+  .card-name {
+    font-size: 18px;
+    font-weight: 600;
+  }
+
+  .sofa {
+    width: 28px;
+    height: 28px;
+    background: #3d322b;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+  }
+
+  .status {
+    font-size: 13px;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .card.occupied .status {
+    color: #e8b88a;
+  }
+
+  .info {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* 弹窗 */
+  .modal-mask {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+
+  .modal-mask.show {
+    display: flex;
+  }
+
+  .modal {
+    background: #2a211c;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    width: 100%;
+    max-width: 340px;
+    padding: 24px 20px;
+  }
+
+  .modal h3 {
+    font-size: 18px;
+    margin-bottom: 18px;
+    text-align: center;
+  }
+
+  .form-group {
+    margin-bottom: 14px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .form-group input {
+    width: 100%;
+    background: #1f1814;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 11px 12px;
+    color: var(--text);
+    font-size: 15px;
+    outline: none;
+  }
+
+  .form-group input:focus {
+    border-color: var(--gold);
+  }
+
+  .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  button {
+    flex: 1;
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  .btn-primary {
+    background: var(--gold);
+    color: #1a1210;
+  }
+
+  .btn-secondary {
+    background: #3d322b;
+    color: var(--text);
+  }
+
+  .btn-clear {
+    background: transparent;
+    color: #c47a6a;
+    border: 1px solid #5c3a28;
+    margin-top: 10px;
+    width: 100%;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="time-badge">19:00 - 次日 07:00 营业时段</div>
+      <h1>Acme 卡座记录系统</h1>
+      <div class="subtitle">点击台位即可录入人数与到达时间，客离后可恢复，翻台会自动标记。</div>
+    </div>
+
+    <div class="section-title">卡座区域</div>
+    <div class="section-desc">点击任意台位录入或查看状态</div>
+
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <!-- 弹窗 -->
+  <div class="modal-mask" id="modal">
+    <div class="modal">
+      <h3 id="modalTitle">编辑卡座</h3>
+      <div class="form-group">
+        <label>人数</label>
+        <input type="number" id="inputPeople" min="0" max="20" placeholder="请输入人数">
+      </div>
+      <div class="form-group">
+        <label>到达时间</label>
+        <input type="time" id="inputTime">
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="closeModal()">取消</button>
+        <button class="btn-primary" onclick="saveData()">保存</button>
+      </div>
+      <button class="btn-clear" onclick="clearData()">清空（标记空台）</button>
+    </div>
+  </div>
+
+<script>
+  // 卡座列表（根据截图）
+  const seats = [
+    "M1", "M3", "M5",
+    "M8", "M9", "M10",
+    "M12", "M13(备用)"
+  ];
+
+  let currentSeat = null;
+  const storageKey = "acme_seat_data";
+
+  // 读取本地数据
+  function loadData() {
+    try {
+      return JSON.parse(localStorage.getItem(storageKey)) || {};
+    } catch {
+      return {};
+    }
+  }
+
+  // 保存本地数据
+  function saveToStorage(data) {
+    localStorage.setItem(storageKey, JSON.stringify(data));
+  }
+
+  // 渲染所有卡座
+  function render() {
+    const data = loadData();
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
+    seats.forEach(name => {
+      const info = data[name] || {};
+      const isOccupied = info.people > 0;
+
+      const card = document.createElement("div");
+      card.className = "card" + (isOccupied ? " occupied" : "");
+      card.onclick = () => openModal(name);
+
+      card.innerHTML = `
+        <div class="card-header">
+          <div class="card-name">${name}</div>
+          <div class="sofa">🛋</div>
+        </div>
+        <div class="status">${isOccupied ? "有客" : "空台"}</div>
+        <div class="info">
+          卡座区域<br>
+          人数：${info.people || "-"}<br>
+          到达：${info.time || "-"}
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  // 打开弹窗
+  function openModal(name) {
+    currentSeat = name;
+    const data = loadData();
+    const info = data[name] || {};
+
+    document.getElementById("modalTitle").textContent = name;
+    document.getElementById("inputPeople").value = info.people || "";
+    document.getElementById("inputTime").value = info.time || "";
+    document.getElementById("modal").classList.add("show");
+  }
+
+  // 关闭弹窗
+  function closeModal() {
+    document.getElementById("modal").classList.remove("show");
+    currentSeat = null;
+  }
+
+  // 保存
+  function saveData() {
+    if (!currentSeat) return;
+    const people = parseInt(document.getElementById("inputPeople").value) || 0;
+    const time = document.getElementById("inputTime").value;
+
+    const data = loadData();
+    if (people > 0) {
+      data[currentSeat] = { people, time: time || getNowTime() };
+    } else {
+      delete data[currentSeat];
+    }
+    saveToStorage(data);
+    closeModal();
+    render();
+  }
+
+  // 清空
+  function clearData() {
+    if (!currentSeat) return;
+    const data = loadData();
+    delete data[currentSeat];
+    saveToStorage(data);
+    closeModal();
+    render();
+  }
+
+  // 获取当前时间（HH:MM）
+  function getNowTime() {
+    const now = new Date();
+    return now.toTimeString().slice(0, 5);
+  }
+
+  // 点击遮罩关闭
+  document.getElementById("modal").addEventListener("click", e => {
+    if (e.target.id === "modal") closeModal();
+  });
+
+  // 初始化
+  render();
+</script>
+</body>
+</html>
