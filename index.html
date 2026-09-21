@@ -1,1 +1,40 @@
-loading...
+<!doctype html>
+<html lang="zh-CN" class="h-full">
+ <head><!-- FIXED VERSION - input type=text for partySize -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>卡座记录系统</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: "DM Sans", sans-serif;
+      background: radial-gradient(circle at top left, rgba(179, 28, 28, 0.18), transparent 30%), radial-gradient(circle at bottom right, rgba(245, 158, 11, 0.10), transparent 30%), linear-gradient(135deg, #120909 0%, #1d1010 45%, #241313 100%);
+      color: #f6efe8;
+    }
+    .gold-line { background: linear-gradient(90deg, transparent, rgba(245, 205, 120, 0.9), transparent); height: 1px; }
+    .seat-tile { transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease; }
+    .seat-tile:hover { transform: translateY(-2px); }
+    .glass { background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .toast-show { animation: toastIn .24s ease forwards; }
+    @keyframes toastIn { from { transform: translateY(10px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    .fade-in { animation: fadeIn .35s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .scroll-slim::-webkit-scrollbar { width: 8px; height: 8px; }
+    .scroll-slim::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 999px; }
+  </style>
+ </head>
+ <body class="h-full">
+  <div id="app" class="h-full w-full overflow-auto p-4 text-center">
+    <h1 class="text-2xl font-bold mb-4">页面代码已损坏，请重新上传完整代码</h1>
+    <p class="text-white/70">刚才的完整代码因为文件太大，推送时出了问题。</p>
+    <p class="mt-4 text-amber-200">请把你完整的 index.html 代码重新粘贴到 GitHub 的 index.html 里。</p>
+    <p class="mt-2 text-sm text-white/50">或者把代码发给我，我再帮你推。</p>
+  </div>
+ </body>
+</html>
